@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 
+import '../user_database.dart';
+
+final dbHelper = UserDatabase();
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -72,49 +76,60 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(height: 24),
                           ElevatedButton(
                             onPressed: () async {
-                              if (usernameController.text.isEmpty ||
-                                  passwordController.text.isEmpty) {
+                              if (usernameController.text.isEmpty || passwordController.text.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('Please fill all fields')),
+                                  const SnackBar(content: Text('Fill all fields')),
                                 );
                                 return;
                               }
 
-                              final result = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => HomeScreen(
-                                    username: usernameController.text,
-                                  ),
-                                ),
-                              );
+                              final user = await dbHelper.getUser(usernameController.text);
 
-                              if (result == true) {
-                                clearFields();
+                              if (user != null && user['password'] == passwordController.text) {
+                                // Логин успешен
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => HomeScreen(username: user['username']),
+                                  ),
+                                );
+                              } else {
+                                // Ошибка логина
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Invalid username or password')),
+                                );
                               }
                             },
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: const Size(double.infinity, 50),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                            ),
-                            child:
-                                const Text('Login', style: TextStyle(fontSize: 18)),
+                            child: Text('Login'),
                           ),
+
                           const SizedBox(height: 12),
-                          OutlinedButton(
-                            onPressed: () {
-                              print(
-                                  'Register pressed: ${usernameController.text}');
+                          TextButton(
+                            onPressed: () async {
+                              if (usernameController.text.isEmpty || passwordController.text.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Fill all fields')),
+                                );
+                                return;
+                              }
+
+                              try {
+                                await dbHelper.insertUser(
+                                  usernameController.text,
+                                  passwordController.text,
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('User registered!')),
+                                );
+                                usernameController.clear();
+                                passwordController.clear();
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Username already exists')),
+                                );
+                              }
                             },
-                            style: OutlinedButton.styleFrom(
-                              minimumSize: const Size(double.infinity, 50),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                            ),
-                            child: const Text('Register',
-                                style: TextStyle(fontSize: 18)),
+                            child: Text('Register'),
                           ),
                         ],
                       ),

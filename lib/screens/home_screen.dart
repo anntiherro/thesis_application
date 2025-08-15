@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../user_database.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final String username;
@@ -8,56 +10,64 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[100], // фон можно поменять
       appBar: AppBar(
-        title: const Text('Home'),
+        title: Text('Home'),
         centerTitle: true,
-        backgroundColor: Colors.blueAccent,
-        automaticallyImplyLeading: false, // убираем стрелку "назад"
+        automaticallyImplyLeading: false, // убираем стрелку назад
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 20),
-            CircleAvatar(
-              radius: 50,
-              backgroundColor: Colors.blueAccent,
-              child: Text(
-                username.isNotEmpty ? username[0].toUpperCase() : 'U',
-                style: const TextStyle(fontSize: 40, color: Colors.white),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.1), // чуть сверху
+            // Нажимаемый аватар
+            InkWell(
+              onTap: () async {
+                final user = await UserDatabase().getUser(username);
+                if (user != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfileScreen(
+                        username: user['username'],
+                        createdAt: user['created_at'],
+                      ),
+                    ),
+                  );
+                }
+              },
+              child: CircleAvatar(
+                radius: 50,
+                backgroundColor: Colors.blueAccent,
+                child: Text(
+                  username.isNotEmpty ? username[0].toUpperCase() : 'U',
+                  style: TextStyle(fontSize: 40, color: Colors.white),
+                ),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Text(
               'Welcome, $username!',
-              style: const TextStyle(
-                  fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 32),
+            SizedBox(height: 32),
             ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 60),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
-                elevation: 4,
-                backgroundColor: Colors.blueAccent,
+                minimumSize: Size(double.infinity, 50),
               ),
-              child: const Text('Start Lesson', style: TextStyle(fontSize: 20)),
+              child: Text('Start Lesson', style: TextStyle(fontSize: 18)),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             OutlinedButton(
               onPressed: () {
-                Navigator.pop(context, true); // logout
+                Navigator.pop(context); // logout
               },
               style: OutlinedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 60),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
-                side: const BorderSide(color: Colors.blueAccent, width: 2),
+                minimumSize: Size(double.infinity, 50),
               ),
-              child: const Text('Logout', style: TextStyle(fontSize: 20)),
+              child: Text('Logout', style: TextStyle(fontSize: 18)),
             ),
           ],
         ),
