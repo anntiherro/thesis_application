@@ -8,43 +8,56 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Home'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('Home'),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
+        automaticallyImplyLeading: false, // убираем стрелку "назад"
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             CircleAvatar(
               radius: 50,
               backgroundColor: Colors.blueAccent,
               child: Text(
                 username.isNotEmpty ? username[0].toUpperCase() : 'U',
-                style: TextStyle(fontSize: 40, color: Colors.white),
+                style: const TextStyle(fontSize: 40, color: Colors.white),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               'Welcome, $username!',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                  fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 32),
+            const SizedBox(height: 32),
             ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
+                minimumSize: const Size(double.infinity, 60),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
+                elevation: 4,
+                backgroundColor: Colors.blueAccent,
               ),
-              child: Text('Start Lesson', style: TextStyle(fontSize: 18)),
+              child: const Text('Start Lesson', style: TextStyle(fontSize: 20)),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             OutlinedButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop(context, true); // logout
               },
               style: OutlinedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
+                minimumSize: const Size(double.infinity, 60),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
+                side: const BorderSide(color: Colors.blueAccent, width: 2),
               ),
-              child: Text('Logout', style: TextStyle(fontSize: 18)),
+              child: const Text('Logout', style: TextStyle(fontSize: 20)),
             ),
           ],
         ),
