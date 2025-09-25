@@ -17,11 +17,11 @@ class ProfileScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: SizedBox(
-        height: screenHeight * 0.66, // колонка занимает 66% экрана
-        width: double.infinity,       // растягиваем по всей ширине
+        height: screenHeight * 0.66, 
+        width: double.infinity,       
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center, // по вертикали центр
-          crossAxisAlignment: CrossAxisAlignment.center, // по горизонтали центр
+          mainAxisAlignment: MainAxisAlignment.center, 
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CircleAvatar(
               radius: 50,
