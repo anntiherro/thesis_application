@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Color.fromARGB(255, 154, 215, 243),
 
       body: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -95,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: MediaQuery.of(context).size.width * 0.3 * 1.5,
                       child: Card(
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(32),
+                          borderRadius: BorderRadius.circular(40),
                         ),
                         clipBehavior:
                             Clip.hardEdge, // важно для скругленных углов

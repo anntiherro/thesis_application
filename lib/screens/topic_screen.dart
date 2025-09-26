@@ -40,7 +40,7 @@ class _TopicScreenState extends State<TopicScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 253, 138), // основной фон
+      backgroundColor: const Color.fromARGB(255, 154, 215, 243), // основной фон
 
       body: Stack(
         children: [
@@ -66,7 +66,7 @@ class _TopicScreenState extends State<TopicScreen> {
             bottom: 0,
             child: Container(
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 245, 154, 70),
+                color: const Color.fromARGB(255, 235, 196, 53),
                 borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
                 boxShadow: [
                   BoxShadow(

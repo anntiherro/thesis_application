@@ -1,6 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+
 class UserDatabase {
   // Creating singleton to have 1 db
   static final UserDatabase _instance = UserDatabase._internal();
