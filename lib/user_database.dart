@@ -57,6 +57,7 @@ class UserDatabase {
         options TEXT,                 -- list of answers JSON
         correct_answer TEXT NOT NULL, -- correct answer
         type TEXT NOT NULL,           -- type of task (multiple_choice, input)
+        icon TEXT,
         FOREIGN KEY (topic_id) REFERENCES topics(id) ON DELETE CASCADE
       )
     ''');
@@ -181,4 +182,12 @@ class UserDatabase {
       whereArgs: [userId],
     );
   }
+
+  Future<Map<String, dynamic>> getTaskById(int id) async {
+    final db = await database;
+    final res = await db.query('tasks', where: 'id = ?', whereArgs: [id]);
+    return res.first;
+  }
 }
+
+

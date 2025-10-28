@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    loadTopics(); // загружаем топики при старте экрана
+    loadTopics(); // loading topics on screen start
   }
 
   // Загружаем топики из базы данных
@@ -77,12 +77,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.1),
 
-            // Горизонтальная карусель тем
+            // horizontal topics slider
             SizedBox(
               height:
                   0.485 *
                   MediaQuery.of(context).size.width *
-                  1.5, // высота карусели
+                  1.5, 
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: topics.length,
@@ -98,10 +98,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(40),
                         ),
                         clipBehavior:
-                            Clip.hardEdge, // важно для скругленных углов
+                            Clip.hardEdge, 
                         child: InkWell(
                           onTap: () {
-                            // Переход на TopicScreen с id и названием темы
+                            // go to topic screen 
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -113,8 +113,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             );
                           },
                           child: SvgPicture.asset(
-                            'assets/topic$topicId.svg', // путь к твоему SVG
-                            fit: BoxFit.cover, // занимает весь размер карточки
+                            'assets/topic$topicId.svg', 
+                            fit: BoxFit.cover, 
                           ),
                         ),
                       ),
