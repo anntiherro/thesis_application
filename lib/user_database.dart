@@ -35,7 +35,8 @@ class UserDatabase {
         id INTEGER PRIMARY KEY AUTOINCREMENT,  
         username TEXT UNIQUE,                 
         password TEXT,                        
-        created_at TEXT                       
+        created_at TEXT,
+        stars INTEGER DEFAULT 0                       
       )
     ''');
 
@@ -62,32 +63,6 @@ class UserDatabase {
       )
     ''');
 
-    // Inserting default tasks
-    // await db.insert('tasks', {
-    //   'id': 11,
-    //   'topic_id': 1,
-    //   'question': 'Example question 1',
-    //   'options': null, // пока оставим пустым
-    //   'correct_answer': 'Answer 1',
-    //   'type': 'input', // просто пример
-    // });
-    // await db.insert('tasks', {
-    //   'id': 12,
-    //   'topic_id': 1,
-    //   'question': 'Example question 1',
-    //   'options': null, // пока оставим пустым
-    //   'correct_answer': 'Answer 1',
-    //   'type': 'input', // просто пример
-    // });
-    // await db.insert('tasks', {
-    //   'id': 13,
-    //   'topic_id': 1,
-    //   'question': 'Example question 1',
-    //   'options': null, // пока оставим пустым
-    //   'correct_answer': 'Answer 1',
-    //   'type': 'input', // просто пример
-    // });
-
     // Creating user_tasks table to track progress
     await db.execute('''
       CREATE TABLE user_tasks (
@@ -100,11 +75,6 @@ class UserDatabase {
       )
     ''');
 
-    // Inserting default topics
-    // await db.insert('topics', {'title': 'Arithmetics'});
-    // await db.insert('topics', {'title': 'Measurement'});
-    // await db.insert('topics', {'title': 'Word Problems'});
-    // await db.insert('topics', {'title': 'Logic'});
   }
 
   // Adding new user to db
@@ -188,6 +158,17 @@ class UserDatabase {
     final res = await db.query('tasks', where: 'id = ?', whereArgs: [id]);
     return res.first;
   }
+
+  Future<void> addStarsToUser(int userId, int starsToAdd) async {
+    final db = await database;
+    await db.rawUpdate('''
+    UPDATE users
+    SET stars = stars + ?
+    WHERE id = ?
+    ''', [starsToAdd, userId],
+    );
+  }
+
 }
 
 

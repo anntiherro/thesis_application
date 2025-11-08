@@ -15,7 +15,7 @@ class _TaskScreenMcState extends State<TaskScreenMc> {
   Map<String, dynamic>? task;
   String? _selectedOption;
   String? _result;
-
+  final int userId = 1;
   @override
   void initState() {
     super.initState();
@@ -40,9 +40,18 @@ class _TaskScreenMcState extends State<TaskScreenMc> {
       _result = "✅ Correct!";
 
       final db = UserDatabase();
-      await db.markTaskCompleted(1, widget.taskId);
+      // Getting task progress for this user
+      final progress = await db.getUserProgress(userId);
+      final taskCompleted = progress.any(
+        (entry) => entry['task_id'] == widget.taskId && entry['completed'] == 1,
+      );
 
-      // Показываем модальное окно
+      if (!taskCompleted) {
+        await db.markTaskCompleted(userId, widget.taskId);
+        await db.addStarsToUser(userId, 100);
+      }
+
+      //  showing modal bottom sheet
       showModalBottomSheet(
         context: context,
         constraints: const BoxConstraints(maxWidth: double.infinity),
@@ -88,8 +97,8 @@ class _TaskScreenMcState extends State<TaskScreenMc> {
                 SizedBox(
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pop(context); // закрыть bottom sheet
-                      Navigator.pop(context, true); // вернуться и обновить
+                      Navigator.pop(context); 
+                      Navigator.pop(context, true); 
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blueAccent,
@@ -125,7 +134,7 @@ class _TaskScreenMcState extends State<TaskScreenMc> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    // Декодируем JSON с вариантами ответов
+    // Decoding options from JSON
     final List<dynamic> options = jsonDecode(task!['options']);
 
     return Scaffold(
@@ -177,7 +186,7 @@ class _TaskScreenMcState extends State<TaskScreenMc> {
                         ),
                         SizedBox(height: screenHeight * 0.04),
 
-                        // Список вариантов ответов
+                        // List of options
                         Expanded(
                           child: ListView.builder(
                             itemCount: options.length,

@@ -14,7 +14,7 @@ class _TaskScreenInputState extends State<TaskScreenInput> {
   Map<String, dynamic>? task;
   final TextEditingController _controller = TextEditingController();
   String? _result;
-
+  final int userId = 1;
   @override
   void initState() {
     super.initState();
@@ -39,8 +39,16 @@ class _TaskScreenInputState extends State<TaskScreenInput> {
       _result = "✅ Correct!";
 
       final db = UserDatabase();
-      await db.markTaskCompleted(1, widget.taskId);
-      
+      // Getting task progress for this user
+      final progress = await db.getUserProgress(userId);
+      final taskCompleted = progress.any(
+        (entry) => entry['task_id'] == widget.taskId && entry['completed'] == 1,
+      );
+
+      if (!taskCompleted) {
+        await db.markTaskCompleted(userId, widget.taskId);
+        await db.addStarsToUser(userId, 100);
+      }
       
       showModalBottomSheet(
         context: context,
@@ -88,8 +96,8 @@ class _TaskScreenInputState extends State<TaskScreenInput> {
                 SizedBox(
                   child: ElevatedButton(
                    onPressed: () {
-                      Navigator.pop(context); // закрыть bottom sheet
-                      Navigator.pop(context, true); // вернуться и обновить
+                      Navigator.pop(context); // close modal
+                      Navigator.pop(context, true); // go back to topic screen
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blueAccent,
