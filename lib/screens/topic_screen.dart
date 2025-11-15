@@ -3,6 +3,7 @@ import '../user_database.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'task_screen_input.dart';
 import 'task_screen_mc.dart';
+import 'task_screen_multi_step.dart'; // NEW
 import 'package:flutter/services.dart' show rootBundle; // NEW
 
 class TopicScreen extends StatefulWidget {
@@ -128,12 +129,24 @@ class _TopicScreenState extends State<TopicScreen> {
         await loadTasks();
         await loadStars();
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Экран для типа "$type" пока не реализован')),
+    } else if (type == 'multi-step') {
+      final completed = await Navigator.push<bool>(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TaskScreenMultiStep(taskId: task['id']),
+        ),
       );
+      if (completed == true) {
+        await loadTasks();
+        await loadStars();
+      }
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Unknown task type: $type')));
     }
   }
+
 
   // NEW: loading tutorial images
   Future<void> _loadTutorial(int topicId, int tutorialOrder) async {
