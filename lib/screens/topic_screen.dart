@@ -29,12 +29,13 @@ class _TopicScreenState extends State<TopicScreen> {
   int _currentPage = 0; // NEW
   int userStars = 0;
   final int userId = 1; // Remember to replace with actual user ID!
-  
+
   @override
   void initState() {
     super.initState();
     loadTasks();
   }
+
   Future<void> loadStars() async {
     final db = UserDatabase();
     final user = await db.getUser('1'); // ACTUAL USERNAME NEEDED
@@ -44,13 +45,14 @@ class _TopicScreenState extends State<TopicScreen> {
       });
     }
   }
+
   Future<void> loadTasks() async {
     final db = UserDatabase();
 
     // Getting tasks for the topic
     final data = await db.getTasksForTopic(widget.topicId);
 
-    // Getting user progress 
+    // Getting user progress
     final progress = await db.getUserProgress(userId);
 
     // Creating a map of task_id to completed status
@@ -111,7 +113,8 @@ class _TopicScreenState extends State<TopicScreen> {
       final completed = await Navigator.push<bool>(
         context,
         MaterialPageRoute(
-          builder: (context) => TaskScreenInput(taskId: task['id']),
+          builder: (context) =>
+              TaskScreenInput(taskId: task['id'], topicId: task['topic_id']),
         ),
       );
       if (completed == true) {
@@ -122,7 +125,8 @@ class _TopicScreenState extends State<TopicScreen> {
       final completed = await Navigator.push<bool>(
         context,
         MaterialPageRoute(
-          builder: (context) => TaskScreenMc(taskId: task['id']),
+          builder: (context) =>
+              TaskScreenMc(taskId: task['id'], topicId: task['topic_id']),
         ),
       );
       if (completed == true) {
@@ -147,7 +151,6 @@ class _TopicScreenState extends State<TopicScreen> {
     }
   }
 
-
   // NEW: loading tutorial images
   Future<void> _loadTutorial(int topicId, int tutorialOrder) async {
     List<String> images = [];
@@ -164,7 +167,7 @@ class _TopicScreenState extends State<TopicScreen> {
       }
     }
 
-    if (images.isEmpty) return; 
+    if (images.isEmpty) return;
 
     setState(() {
       _tutorialImages = images;
