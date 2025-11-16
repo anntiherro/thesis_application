@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Map<String, dynamic>> topics = [];
-  int userStars = 0; 
+  int userStars = 0;
 
   @override
   void initState() {
@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 154, 215, 243),
+      backgroundColor: const Color.fromRGBO(249, 241, 220, 1),
       body: Stack(
         children: [
           Padding(
