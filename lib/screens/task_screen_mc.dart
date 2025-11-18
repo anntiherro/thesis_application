@@ -34,13 +34,13 @@ class _TaskScreenMcState extends State<TaskScreenMc> {
   void _setThemeForTopic() {
     switch (widget.topicId) {
       case 1:
-        backgroundColor = const Color.fromARGB(255, 95, 161, 159);
+        backgroundColor = Colors.blueAccent;
         containerColor = const Color.fromARGB(255, 249, 241, 220);
         taskTextColor = Color.fromARGB(255, 253, 247, 181);
         circlesColor = Color.fromARGB(255, 253, 247, 181);
         break;
       case 2:
-        backgroundColor = const Color.fromARGB(255, 95, 161, 159);
+        backgroundColor = Colors.blueAccent;
         containerColor = const Color.fromARGB(255, 249, 241, 220);
         taskTextColor = Color.fromARGB(255, 201, 231, 252);
         circlesColor = Color.fromARGB(255, 201, 231, 252);
@@ -51,7 +51,7 @@ class _TaskScreenMcState extends State<TaskScreenMc> {
         taskTextColor = Colors.redAccent;
         break;
       case 4:
-        backgroundColor = const Color.fromARGB(255, 95, 161, 159);
+        backgroundColor = Colors.blueAccent;
         containerColor = const Color.fromARGB(255, 249, 241, 220);
         taskTextColor = Color.fromARGB(255, 248, 225, 240);
         circlesColor = Color.fromARGB(255, 248, 225, 240);

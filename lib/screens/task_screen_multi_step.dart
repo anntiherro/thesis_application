@@ -180,7 +180,7 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
                 height: 60,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 95, 161, 159),
+                    backgroundColor: Colors.blueAccent,
                     padding: const EdgeInsets.symmetric(
                       vertical: 16,
                       horizontal: 32,
@@ -216,7 +216,7 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    final backgroundColor = const Color.fromARGB(255, 95, 161, 159);
+    final backgroundColor = Colors.blueAccent;
     final circlesColor = const Color.fromARGB(
       255,
       255,
@@ -373,7 +373,7 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
                                   style: const TextStyle(
                                     fontSize: 34,
                                     fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 95, 161, 159),
+                                    color: Colors.blueAccent,
                                   ),
                                 ),
 
@@ -460,7 +460,7 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
         ),
         decoration: InputDecoration(
           filled: true,
-          fillColor: const Color.fromARGB(255, 95, 161, 159),
+          fillColor: Colors.white,
           contentPadding: const EdgeInsets.symmetric(vertical: 14),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),

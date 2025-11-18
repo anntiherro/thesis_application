@@ -1,7 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-
 class UserDatabase {
   // Creating singleton to have 1 db
   static final UserDatabase _instance = UserDatabase._internal();
@@ -36,7 +35,8 @@ class UserDatabase {
         username TEXT UNIQUE,                 
         password TEXT,                        
         created_at TEXT,
-        stars INTEGER DEFAULT 0                       
+        stars INTEGER DEFAULT 0,
+        avatar TEXT DEFAULT 'bronze'                       
       )
     ''');
 
@@ -74,7 +74,6 @@ class UserDatabase {
         FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE
       )
     ''');
-
   }
 
   // Adding new user to db
@@ -161,14 +160,23 @@ class UserDatabase {
 
   Future<void> addStarsToUser(int userId, int starsToAdd) async {
     final db = await database;
-    await db.rawUpdate('''
+    await db.rawUpdate(
+      '''
     UPDATE users
     SET stars = stars + ?
     WHERE id = ?
-    ''', [starsToAdd, userId],
+    ''',
+      [starsToAdd, userId],
     );
   }
 
+  Future<void> updateUserAvatar(String username, String avatar) async {
+    final db = await database;
+    await db.update(
+      "users",
+      {"avatar": avatar},
+      where: "username = ?",
+      whereArgs: [username],
+    );
+  }
 }
-
-
