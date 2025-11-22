@@ -8,14 +8,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // path to db
-  String path = join(await getDatabasesPath(), 'app.db');
+  //String path = join(await getDatabasesPath(), 'app.db');
 
-  // deleting old database(when developing changes of 1st version of db)
-  await deleteDatabase(path);
-  print('Old database deleted at $path');
+  // // deleting old database(when developing changes of 1st version of db)
+  // await deleteDatabase(path);
+  // print('Old database deleted at $path');
 
-  // Filling DB
-  await SeedData.seedDatabase();
+  // // Filling DB
+  // await SeedData.seedDatabase();
 
   runApp(MyApp());
 }

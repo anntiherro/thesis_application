@@ -9,11 +9,13 @@ import 'package:flutter/services.dart' show rootBundle; // NEW
 class TopicScreen extends StatefulWidget {
   final int topicId;
   final String topicTitle;
+  final int userId;
 
   const TopicScreen({
     super.key,
     required this.topicId,
     required this.topicTitle,
+    required this.userId,
   });
 
   @override
@@ -28,7 +30,7 @@ class _TopicScreenState extends State<TopicScreen> {
   List<String> _tutorialImages = []; // NEW
   int _currentPage = 0; // NEW
   int userStars = 0;
-  final int userId = 1; // Remember to replace with actual user ID!
+  int get userId => widget.userId; 
 
   @override
   void initState() {
@@ -38,7 +40,7 @@ class _TopicScreenState extends State<TopicScreen> {
 
   Future<void> loadStars() async {
     final db = UserDatabase();
-    final user = await db.getUser('1'); // ACTUAL USERNAME NEEDED
+    final user = await db.getUserById(widget.userId); // ACTUAL USERNAME NEEDED
     if (user != null && user['stars'] != null) {
       setState(() {
         userStars = user['stars'];
@@ -114,7 +116,7 @@ class _TopicScreenState extends State<TopicScreen> {
         context,
         MaterialPageRoute(
           builder: (context) =>
-              TaskScreenInput(taskId: task['id'], topicId: task['topic_id']),
+              TaskScreenInput(taskId: task['id'], topicId: task['topic_id'], userId: userId),
         ),
       );
       if (completed == true) {
@@ -126,7 +128,7 @@ class _TopicScreenState extends State<TopicScreen> {
         context,
         MaterialPageRoute(
           builder: (context) =>
-              TaskScreenMc(taskId: task['id'], topicId: task['topic_id']),
+              TaskScreenMc(taskId: task['id'], topicId: task['topic_id'], userId: userId),
         ),
       );
       if (completed == true) {
@@ -137,7 +139,7 @@ class _TopicScreenState extends State<TopicScreen> {
       final completed = await Navigator.push<bool>(
         context,
         MaterialPageRoute(
-          builder: (context) => TaskScreenMultiStep(taskId: task['id']),
+          builder: (context) => TaskScreenMultiStep(taskId: task['id'], userId: userId,),
         ),
       );
       if (completed == true) {

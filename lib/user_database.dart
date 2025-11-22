@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'seed_data.dart';
 
 class UserDatabase {
   // Creating singleton to have 1 db
@@ -74,6 +75,7 @@ class UserDatabase {
         FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE
       )
     ''');
+    await SeedData.seedDatabase();
   }
 
   // Adding new user to db
@@ -100,6 +102,12 @@ class UserDatabase {
     );
     if (res.isNotEmpty) return res.first; //return first entry
     return null; // if no user found
+  }
+  Future<Map<String, dynamic>?> getUserById(int id) async {
+    final db = await database;
+    final res = await db.query('users', where: 'id = ?', whereArgs: [id]);
+    if (res.isNotEmpty) return res.first;
+    return null;
   }
 
   // Getting all topics

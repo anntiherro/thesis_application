@@ -41,55 +41,74 @@ class _LoginScreenState extends State<LoginScreen> {
           Column(
             children: [
               Expanded(
-                child: SingleChildScrollView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  child: Column(
-                    children: [
-                      SizedBox(height: size.height * 0.08),
-
-                      /// HUGE APP NAME
-                      SvgPicture.asset(
-                        "assets/app_name-cropped.svg",
-                        width: size.width * 0.9,
-                        height: size.height * 0.18, // responsive height
-                        fit: BoxFit.contain,
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SingleChildScrollView(
+                      reverse: true, // поднимает поле вверх
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
                       ),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: constraints.maxHeight,
+                        ),
+                        child: IntrinsicHeight(
+                          child: Column(
+                            children: [
+                              SizedBox(height: size.height * 0.08),
 
-                      const SizedBox(height: 10),
+                              /// --- FIXED SVG ---
+                              SvgPicture.asset(
+                                "assets/app_name-cropped.svg",
+                                width: size.width * 0.9,
+                                height: size.height * 0.18,
+                                fit: BoxFit.contain,
+                              ),
 
-                      /// CHARACTERS BELOW NAME
-                      SvgPicture.asset(
-                        "assets/characters.svg",
-                        width: size.width * 0.50,
-                        height: size.height * 0.16,
-                        fit: BoxFit.contain, // same size, centered
-                      ),
+                              const SizedBox(height: 10),
 
-                      SizedBox(height: size.height * 0.30),
+                              SvgPicture.asset(
+                                "assets/characters.svg",
+                                width: size.width * 0.50,
+                                height: size.height * 0.16,
+                                fit: BoxFit.contain,
+                              ),
 
-                      /// CONTENT
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _inputField(
-                              controller: usernameController,
-                              hint: "USERNAME",
-                            ),
-                            const SizedBox(height: 16),
-                            _inputField(
-                              controller: passwordController,
-                              hint: "PASSWORD",
-                              obscure: true,
-                            ),
-                          ],
+                              /// --- Spacer that collapses when keyboard appears ---
+                              const Spacer(),
+
+                              /// --- INPUTS (move up with keyboard) ---
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24.0,
+                                ),
+                                child: Column(
+                                  children: [
+                                    _inputField(
+                                      controller: usernameController,
+                                      hint: "USERNAME",
+                                    ),
+                                    const SizedBox(height: 16),
+                                    _inputField(
+                                      controller: passwordController,
+                                      hint: "PASSWORD",
+                                      obscure: true,
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              const SizedBox(height: 40),
+                            ],
+                          ),
                         ),
                       ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
               ),
+
+
 
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -204,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // ------------------- INPUT FIELD -------------------
 
-  Widget _inputField({
+ Widget _inputField({
     required TextEditingController controller,
     required String hint,
     bool obscure = false,
@@ -218,7 +237,7 @@ class _LoginScreenState extends State<LoginScreen> {
         style: const TextStyle(fontSize: 26, fontFamily: "Ubuntu"),
         decoration: InputDecoration(
           filled: true,
-          fillColor: const Color.fromRGBO(249, 241, 220, 1),
+          fillColor: const Color.fromRGBO(249, 241, 220, 1), 
           hintText: hint,
           hintStyle: const TextStyle(
             fontSize: 24,
@@ -228,7 +247,29 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide.none,
+            borderSide: const BorderSide(
+              color: Color.fromRGBO(19, 189, 171, 1), 
+              width: 2,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: const BorderSide(
+              color: Color.fromRGBO(
+                19,
+                189,
+                171,
+                1,
+              ), 
+              width: 2,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: const BorderSide(
+              color: Color.fromRGBO(0, 150, 136, 1), 
+              width: 2.5,
+            ),
           ),
         ),
       ),

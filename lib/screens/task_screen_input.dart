@@ -6,11 +6,13 @@ import 'package:floating_animation/floating_animation.dart';
 class TaskScreenInput extends StatefulWidget {
   final int taskId;
   final int topicId;
+  final int userId;
 
   const TaskScreenInput({
     super.key,
     required this.taskId,
     required this.topicId,
+    required this.userId,
   });
 
   @override
@@ -21,7 +23,6 @@ class _TaskScreenInputState extends State<TaskScreenInput> {
   Map<String, dynamic>? task;
   final TextEditingController _controller = TextEditingController();
   String? _result;
-  final int userId = 1;
 
   late Color backgroundColor;
   late Color containerColor;
@@ -89,14 +90,14 @@ class _TaskScreenInputState extends State<TaskScreenInput> {
       _result = "✅ Correct!";
 
       final db = UserDatabase();
-      final progress = await db.getUserProgress(userId);
+      final progress = await db.getUserProgress(widget.userId);
       final taskCompleted = progress.any(
         (entry) => entry['task_id'] == widget.taskId && entry['completed'] == 1,
       );
 
       if (!taskCompleted) {
-        await db.markTaskCompleted(userId, widget.taskId);
-        await db.addStarsToUser(userId, 100);
+        await db.markTaskCompleted(widget.userId, widget.taskId);
+        await db.addStarsToUser(widget.userId, 100);
       }
 
       showModalBottomSheet(
@@ -255,7 +256,7 @@ class _TaskScreenInputState extends State<TaskScreenInput> {
                         task!['question'],
                         textAlign: TextAlign.center,
                         style: const TextStyle(
-                          fontSize: 72,
+                          fontSize: 50,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Ubuntu',
                           color: Color(0xFF34332E),
@@ -362,10 +363,6 @@ class _TaskScreenInputState extends State<TaskScreenInput> {
                   icon: const Icon(Icons.replay),
                   tooltip: "Clear Drawing",
                   onPressed: () => setState(() => _fullScreenPoints.clear()),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.of(context).pop(),
                 ),
               ],
             ),

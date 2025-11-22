@@ -17,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Map<String, dynamic>> topics = [];
   int userStars = 0;
   String _avatarName = "bronze";
-
+  int? userId;
   @override
   void initState() {
     super.initState();
@@ -35,11 +35,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> loadStars() async {
     final db = UserDatabase();
-    final user = await db.getUser(widget.username);
+    final user = await db.getUser(widget.username); // ищем по username
     if (user != null && user['stars'] != null) {
       setState(() {
         userStars = user['stars'];
         _avatarName = user['avatar'] ?? 'bronze';
+        userId = user['id']; // сохраняем ID
       });
     }
   }
@@ -203,6 +204,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       builder: (context) => TopicScreen(
                                         topicId: topicId,
                                         topicTitle: topic['title'],
+                                        userId:
+                                            userId!, // передаём ID, обязательное условие чтобы не было null
                                       ),
                                     ),
                                   ).then((_) => loadStars());
@@ -230,10 +233,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    icon: const Icon(Icons.logout_rounded, color: Colors.white),
+                    icon: const Icon(Icons.logout_rounded, color: Colors.white, size: 32),
                     label: const Text(
                       "Logout",
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      style: TextStyle(fontSize: 32, color: Colors.white),
                     ),
                   ),
                 ],

@@ -6,8 +6,9 @@ import 'package:lottie/lottie.dart';
 
 class TaskScreenMultiStep extends StatefulWidget {
   final int taskId;
+  final int userId;
 
-  const TaskScreenMultiStep({super.key, required this.taskId});
+  const TaskScreenMultiStep({super.key, required this.taskId, required this.userId});
 
   @override
   State<TaskScreenMultiStep> createState() => _TaskScreenMultiStepState();
@@ -16,7 +17,7 @@ class TaskScreenMultiStep extends StatefulWidget {
 class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
   String question = "";
   List<Map<String, dynamic>> steps = [];
-  final int userId = 1;
+
 
   List<TextEditingController> left = [];
   List<TextEditingController> right = [];
@@ -108,14 +109,14 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
     }
 
     final db = UserDatabase();
-    final progress = await db.getUserProgress(userId);
+    final progress = await db.getUserProgress(widget.userId);
     final taskCompleted = progress.any(
       (entry) => entry['task_id'] == widget.taskId && entry['completed'] == 1,
     );
 
     if (!taskCompleted) {
-      await db.markTaskCompleted(userId, widget.taskId);
-      await db.addStarsToUser(userId, 100);
+      await db.markTaskCompleted(widget.userId, widget.taskId);
+      await db.addStarsToUser(widget.userId, 100);
     }
 
     _showSuccessSheet();
@@ -304,7 +305,7 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
                       child: Text(
                         question,
                         style: const TextStyle(
-                          fontSize: 24,
+                          fontSize: 40,
                           height: 1.4,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Ubuntu',
@@ -353,7 +354,7 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
                         ),
                       ),
                     ),
-
+                    const SizedBox(height: 20),
                     /// ---------- STEPS LIST ----------
                     Expanded(
                       child: ListView.builder(
@@ -503,10 +504,7 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
                   tooltip: "Clear Drawing",
                   onPressed: () => setState(() => _fullScreenPoints.clear()),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
+                
               ],
             ),
             body: GestureDetector(

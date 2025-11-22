@@ -7,8 +7,8 @@ import 'package:floating_animation/floating_animation.dart';
 class TaskScreenMc extends StatefulWidget {
   final int taskId;
   final int topicId;
-
-  const TaskScreenMc({super.key, required this.taskId, required this.topicId});
+  final int userId;
+  const TaskScreenMc({super.key, required this.taskId, required this.topicId, required this.userId});
 
   @override
   State<TaskScreenMc> createState() => _TaskScreenMcState();
@@ -18,7 +18,6 @@ class _TaskScreenMcState extends State<TaskScreenMc> {
   Map<String, dynamic>? task;
   String? _selectedOption;
   String? _result;
-  final int userId = 1;
   late Color backgroundColor;
   late Color containerColor;
   late Color taskTextColor;
@@ -86,15 +85,15 @@ class _TaskScreenMcState extends State<TaskScreenMc> {
       _result = "Correct!";
 
       final db = UserDatabase();
-      final progress = await db.getUserProgress(userId);
+      final progress = await db.getUserProgress(widget.userId);
 
       final completed = progress.any(
         (entry) => entry['task_id'] == widget.taskId && entry['completed'] == 1,
       );
 
       if (!completed) {
-        await db.markTaskCompleted(userId, widget.taskId);
-        await db.addStarsToUser(userId, 100);
+        await db.markTaskCompleted(widget.userId, widget.taskId);
+        await db.addStarsToUser(widget.userId, 100);
       }
 
       showModalBottomSheet(
@@ -376,10 +375,6 @@ class _TaskScreenMcState extends State<TaskScreenMc> {
                   icon: const Icon(Icons.replay),
                   tooltip: "Clear Drawing",
                   onPressed: () => setState(() => _fullScreenPoints.clear()),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.of(context).pop(),
                 ),
               ],
             ),
