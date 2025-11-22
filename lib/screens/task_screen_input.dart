@@ -17,16 +17,18 @@ class TaskScreenInput extends StatefulWidget {
   State<TaskScreenInput> createState() => _TaskScreenInputState();
 }
 
-class _TaskScreenInputState extends State<TaskScreenInput>
-    with TickerProviderStateMixin {
+class _TaskScreenInputState extends State<TaskScreenInput> {
   Map<String, dynamic>? task;
   final TextEditingController _controller = TextEditingController();
   String? _result;
   final int userId = 1;
+
   late Color backgroundColor;
   late Color containerColor;
   late Color taskTextColor;
   late Color circlesColor;
+
+  List<Offset?> _fullScreenPoints = [];
 
   @override
   void initState() {
@@ -38,32 +40,34 @@ class _TaskScreenInputState extends State<TaskScreenInput>
   void _setThemeForTopic() {
     switch (widget.topicId) {
       case 1:
-        backgroundColor = Colors.blueAccent;
-        containerColor = const Color.fromARGB(255, 249, 241, 220);
-        taskTextColor = Color.fromARGB(255, 253, 247, 181);
-        circlesColor = Color.fromARGB(255, 253, 247, 181);
+        backgroundColor = const Color.fromARGB(255, 255, 245, 181);
+        containerColor = const Color.fromARGB(255, 255, 237, 124);
+        taskTextColor = const Color.fromARGB(255, 255, 237, 124);
+        circlesColor = const Color(0xFFFDF7B5);
         break;
       case 2:
-        backgroundColor = Colors.blueAccent;
-        containerColor = const Color.fromARGB(255, 249, 241, 220);
-        taskTextColor = Color.fromARGB(255, 201, 231, 252);
-        circlesColor = Color.fromARGB(255, 201, 231, 252);
+        backgroundColor = const Color.fromRGBO(199, 217, 255, 1);
+        containerColor = const Color.fromRGBO(146, 181, 255, 1);
+        taskTextColor = const Color.fromRGBO(146, 181, 255, 1);
+        circlesColor = const Color(0xFFC9E7FC);
         break;
       case 3:
-        backgroundColor = const Color.fromARGB(255, 95, 161, 159);
-        containerColor = const Color.fromARGB(255, 248, 120, 120);
-        taskTextColor = Colors.redAccent;
+        backgroundColor = const Color.fromRGBO(255, 219, 219, 1);
+        containerColor = const Color.fromRGBO(248, 186, 186, 1);
+        taskTextColor = Color.fromRGBO(248, 186, 186, 1);
+        circlesColor = Colors.redAccent;
         break;
       case 4:
-        backgroundColor = Colors.blueAccent;
-        containerColor = const Color.fromARGB(255, 249, 241, 220);
-        taskTextColor = Color.fromARGB(255, 248, 225, 240);
-        circlesColor = Color.fromARGB(255, 248, 225, 240);
+        backgroundColor = const Color.fromRGBO(255, 229, 241, 1);
+        containerColor = const Color.fromRGBO(251, 190, 218, 1);
+        taskTextColor = const Color.fromRGBO(251, 190, 218, 1);
+        circlesColor = const Color(0xFFF8E1F0);
         break;
       default:
         backgroundColor = Colors.white;
         containerColor = Colors.grey[200]!;
         taskTextColor = Colors.blueAccent;
+        circlesColor = Colors.blueAccent;
     }
   }
 
@@ -177,14 +181,12 @@ class _TaskScreenInputState extends State<TaskScreenInput>
             end: Alignment.bottomRight,
             colors: [
               backgroundColor,
-              const Color.fromARGB(255, 95, 161, 159).withOpacity(0.8),
+              const Color.fromARGB(255, 255, 255, 239).withOpacity(0.8),
             ],
-            stops: [0.0, 0.99],
           ),
         ),
         child: Stack(
           children: [
-            // Floating shapes as background
             FloatingAnimation(
               maxShapes: 40,
               speedMultiplier: 0.6,
@@ -198,32 +200,27 @@ class _TaskScreenInputState extends State<TaskScreenInput>
               pulseSpeed: 1.2,
               pulseAmplitude: 0.4,
             ),
-
-            // Then your main content on top
-            _buildMainContent(context, MediaQuery.of(context).size.height),
+            _buildMainContent(screenHeight),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildMainContent(BuildContext context, double screenHeight) {
+  Widget _buildMainContent(double screenHeight) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(height: screenHeight * 0.08),
-
-          // Header
           Text(
-            '🧮 Task ${task!['id'].toString().substring(1)}',
+            '📖 Task ${task!['id'].toString().substring(1)}',
             style: TextStyle(
               fontSize: 80,
               fontWeight: FontWeight.bold,
               fontFamily: 'Ubuntu',
               color: taskTextColor,
-              shadows: [
+              shadows: const [
                 Shadow(
                   offset: Offset(2, 2),
                   blurRadius: 4,
@@ -232,14 +229,11 @@ class _TaskScreenInputState extends State<TaskScreenInput>
               ],
             ),
           ),
-
           SizedBox(height: screenHeight * 0.06),
-
-          // Question Card
           Center(
             child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.85,
-              height: MediaQuery.of(context).size.height * 0.6,
+              height: screenHeight * 0.6,
               child: Card(
                 elevation: 10,
                 shadowColor: Colors.black26,
@@ -250,8 +244,6 @@ class _TaskScreenInputState extends State<TaskScreenInput>
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [containerColor.withOpacity(0.9), containerColor],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -259,7 +251,6 @@ class _TaskScreenInputState extends State<TaskScreenInput>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 16),
                       Text(
                         task!['question'],
                         textAlign: TextAlign.center,
@@ -267,12 +258,31 @@ class _TaskScreenInputState extends State<TaskScreenInput>
                           fontSize: 72,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Ubuntu',
-                          color: Color.fromRGBO(52, 51, 46, 0.867),
+                          color: Color(0xFF34332E),
                         ),
                       ),
                       const SizedBox(height: 32),
-                      _buildAnswerField(context),
-                      const SizedBox(height: 28),
+                      _buildAnswerField(),
+                      const SizedBox(height: 20),
+                      ElevatedButton.icon(
+                        onPressed: _openFullScreenCanvas,
+                        icon: const Icon(Icons.brush, size: 32),
+                        label: const Text(
+                          "Open Canvas",
+                          style: TextStyle(fontSize: 32),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: backgroundColor,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 16,
+                            horizontal: 24,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
                       _buildCheckButton(),
                       if (_result != null) ...[
                         const SizedBox(height: 20),
@@ -298,50 +308,126 @@ class _TaskScreenInputState extends State<TaskScreenInput>
     );
   }
 
-  Widget _buildAnswerField(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.6,
-      child: TextField(
-        controller: _controller,
-        style: const TextStyle(fontSize: 40, color: Colors.black87),
-        textAlign: TextAlign.center,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          hintText: "Type your answer...",
-          hintStyle: const TextStyle(fontSize: 32, color: Colors.grey),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: Colors.amber, width: 3),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: Colors.blueAccent, width: 3),
+  Widget _buildAnswerField() => Container(
+    width: MediaQuery.of(context).size.width * 0.6,
+    child: TextField(
+      controller: _controller,
+      style: const TextStyle(fontSize: 40, color: Colors.black87),
+      textAlign: TextAlign.center,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        hintText: "Type your answer...",
+        hintStyle: const TextStyle(fontSize: 32, color: Colors.grey),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Colors.amber, width: 3),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Colors.blueAccent, width: 3),
+        ),
+      ),
+    ),
+  );
+
+  Widget _buildCheckButton() => ElevatedButton.icon(
+    onPressed: _checkAnswer,
+    icon: const Icon(Icons.check_circle_outline, color: Colors.white, size: 32),
+    label: const Text(
+      "Check",
+      style: TextStyle(fontSize: 40, color: Colors.white),
+    ),
+    style: ElevatedButton.styleFrom(
+      backgroundColor: const Color.fromRGBO(32, 189, 172, 1),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 6,
+      shadowColor: backgroundColor.withOpacity(0.4),
+    ),
+  );
+
+  void _openFullScreenCanvas() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (_) => StatefulBuilder(
+          builder: (context, setState) => Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              title: const Text("Drawing Canvas"),
+              backgroundColor: backgroundColor,
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.replay),
+                  tooltip: "Clear Drawing",
+                  onPressed: () => setState(() => _fullScreenPoints.clear()),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+            body: GestureDetector(
+              onPanStart: (details) {
+                final box = context.findRenderObject() as RenderBox;
+                final local = box.globalToLocal(details.globalPosition);
+                setState(() => _fullScreenPoints.add(local));
+              },
+              onPanUpdate: (details) {
+                final box = context.findRenderObject() as RenderBox;
+                final local = box.globalToLocal(details.globalPosition);
+                setState(() => _fullScreenPoints.add(local));
+              },
+              onPanEnd: (_) => setState(() => _fullScreenPoints.add(null)),
+              child: CustomPaint(
+                painter: DrawingPainter(points: _fullScreenPoints),
+                size: Size.infinite,
+              ),
+            ),
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildCheckButton() {
-    return ElevatedButton.icon(
-      onPressed: _checkAnswer,
-      icon: const Icon(
-        Icons.check_circle_outline,
-        color: Colors.white,
-        size: 32,
-      ),
-      label: const Text(
-        "Check",
-        style: TextStyle(fontSize: 40, color: Colors.white),
-      ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: backgroundColor,
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 6,
-        shadowColor: backgroundColor.withOpacity(0.4),
-      ),
-    );
+class DrawingPainter extends CustomPainter {
+  final List<Offset?> points;
+  final double gridSize; // size of the squares
+  final Color gridColor;
+
+  DrawingPainter({
+    required this.points,
+    this.gridSize = 40,
+    this.gridColor = const Color(0xFFE0E0E0),
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color.fromARGB(255, 3, 9, 82)
+      ..strokeWidth = 5
+      ..strokeCap = StrokeCap.round;
+    final gridPaint = Paint()
+      ..color = gridColor
+      ..strokeWidth = 1;
+
+    for (double x = 0; x <= size.width; x += gridSize) {
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), gridPaint);
+    }
+    for (double y = 0; y <= size.height; y += gridSize) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
+    }
+
+    for (int i = 0; i < points.length - 1; i++) {
+      if (points[i] != null && points[i + 1] != null) {
+        canvas.drawLine(points[i]!, points[i + 1]!, paint);
+      }
+    }
   }
+
+  @override
+  bool shouldRepaint(DrawingPainter oldDelegate) => true;
 }

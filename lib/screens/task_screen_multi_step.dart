@@ -24,6 +24,7 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
 
   bool loading = true;
   String errorMessage = "";
+  List<Offset?> _fullScreenPoints = [];
 
   @override
   void initState() {
@@ -56,8 +57,8 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
   String _symbolForType(String type) {
     if (type == "sum") return "+";
     if (type == "subtract") return "-";
-    if (type == "mul") return "×";
-    if (type == "div") return "÷";
+    if (type == "multiply") return "×";
+    if (type == "divide") return "÷";
     return "?";
   }
 
@@ -85,10 +86,10 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
         case "subtract":
           calc = l - r;
           break;
-        case "mul":
+        case "multiply":
           calc = l * r;
           break;
-        case "div":
+        case "divide":
           if (r == 0) {
             setState(() => errorMessage = "Division by zero");
             return;
@@ -180,7 +181,7 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
                 height: 60,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
+                    backgroundColor: const Color.fromRGBO(255, 219, 219, 1),
                     padding: const EdgeInsets.symmetric(
                       vertical: 16,
                       horizontal: 32,
@@ -216,7 +217,7 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    final backgroundColor = Colors.blueAccent;
+    final backgroundColor = const Color.fromRGBO(255, 219, 219, 1);
     final circlesColor = const Color.fromARGB(
       255,
       255,
@@ -230,10 +231,7 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              backgroundColor,
-              const Color.fromARGB(255, 95, 161, 159).withOpacity(0.8),
-            ],
+            colors: [backgroundColor, Colors.white],
             stops: const [0.0, 0.99],
           ),
         ),
@@ -263,12 +261,12 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
                   children: [
                     /// ---------- TASK TITLE ----------
                     Text(
-                      '🧮 Task ${widget.taskId.toString().substring(1)}',
+                      '📊 Task ${widget.taskId.toString().substring(1)}',
                       style: const TextStyle(
                         fontSize: 60,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Ubuntu',
-                        color: Color.fromRGBO(255, 205, 210, 1),
+                        color: Color.fromRGBO(248, 186, 186, 1),
                         shadows: [
                           Shadow(
                             offset: Offset(2, 2),
@@ -288,8 +286,8 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           colors: [
-                            Color.fromARGB(255, 141, 217, 214),
-                            Color.fromARGB(255, 141, 217, 214),
+                            Color.fromRGBO(248, 186, 186, 1),
+                            Color.fromRGBO(248, 186, 186, 1),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -337,6 +335,24 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
                       ),
 
                     const SizedBox(height: 10),
+                    ElevatedButton.icon(
+                      onPressed: _openFullScreenCanvas,
+                      icon: const Icon(Icons.brush, size: 32),
+                      label: const Text(
+                        "Open Canvas",
+                        style: TextStyle(fontSize: 32),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: backgroundColor,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 16,
+                          horizontal: 24,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                    ),
 
                     /// ---------- STEPS LIST ----------
                     Expanded(
@@ -352,7 +368,7 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
                               horizontal: 14,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 249, 241, 220),
+                              color: const Color.fromRGBO(248, 186, 186, 1),
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
@@ -373,7 +389,7 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
                                   style: const TextStyle(
                                     fontSize: 34,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.blueAccent,
+                                    color: Colors.redAccent,
                                   ),
                                 ),
 
@@ -405,11 +421,11 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
                       height: 65,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(
-                            255,
-                            255,
-                            158,
-                            158,
+                          backgroundColor: const Color.fromRGBO(
+                            32,
+                            189,
+                            172,
+                            1,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18),
@@ -470,4 +486,88 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
       ),
     );
   }
+
+  void _openFullScreenCanvas() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (_) => StatefulBuilder(
+          builder: (context, setState) => Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              title: const Text("Drawing Canvas"),
+              backgroundColor: const Color.fromRGBO(255, 219, 219, 1),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.replay),
+                  tooltip: "Clear Drawing",
+                  onPressed: () => setState(() => _fullScreenPoints.clear()),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+            body: GestureDetector(
+              onPanStart: (details) {
+                final box = context.findRenderObject() as RenderBox;
+                final local = box.globalToLocal(details.globalPosition);
+                setState(() => _fullScreenPoints.add(local));
+              },
+              onPanUpdate: (details) {
+                final box = context.findRenderObject() as RenderBox;
+                final local = box.globalToLocal(details.globalPosition);
+                setState(() => _fullScreenPoints.add(local));
+              },
+              onPanEnd: (_) => setState(() => _fullScreenPoints.add(null)),
+              child: CustomPaint(
+                painter: DrawingPainter(points: _fullScreenPoints),
+                size: Size.infinite,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class DrawingPainter extends CustomPainter {
+  final List<Offset?> points;
+  final double gridSize; // size of the squares
+  final Color gridColor;
+
+  DrawingPainter({
+    required this.points,
+    this.gridSize = 40,
+    this.gridColor = const Color(0xFFE0E0E0),
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color.fromARGB(255, 3, 9, 82)
+      ..strokeWidth = 5
+      ..strokeCap = StrokeCap.round;
+    final gridPaint = Paint()
+      ..color = gridColor
+      ..strokeWidth = 1;
+
+    for (double x = 0; x <= size.width; x += gridSize) {
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), gridPaint);
+    }
+    for (double y = 0; y <= size.height; y += gridSize) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
+    }
+
+    for (int i = 0; i < points.length - 1; i++) {
+      if (points[i] != null && points[i + 1] != null) {
+        canvas.drawLine(points[i]!, points[i + 1]!, paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(DrawingPainter oldDelegate) => true;
 }
