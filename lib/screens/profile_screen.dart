@@ -33,21 +33,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _loadStats() async {
     final db = UserDatabase();
 
-    // 1. Get user
     final user = await db.getUser(widget.username);
     if (user == null) return;
     final int userId = user["id"];
     avatar = user["avatar"] ?? "bronze";
 
-    // 2. Get all tasks
     final allTasks = await db.database.then((dbObj) => dbObj.query("tasks"));
     totalTasks = allTasks.length;
 
-    // 3. Get user progress
     final progress = await db.getUserProgress(userId);
     solvedTasks = progress.where((e) => e["completed"] == 1).length;
 
-    // 4. Count completed topics
     final topics = await db.getTopics();
     completedTopics = 0;
 
@@ -72,7 +68,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     }
 
-    // 5. Overall %
     overallPercent = totalTasks == 0 ? 0 : (solvedTasks / totalTasks) * 100;
 
     setState(() => loading = false);
@@ -99,7 +94,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       InkWell(
                         borderRadius: BorderRadius.circular(75),
                         onTap: () async {
-                          // Navigate to AchievementsScreen and wait for result
                           final selectedAvatar = await Navigator.push<String>(
                             context,
                             MaterialPageRoute(
@@ -108,7 +102,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           );
 
-                          // If user selected a new avatar, update it
                           if (selectedAvatar != null &&
                               selectedAvatar.isNotEmpty) {
                             setState(() {
@@ -140,7 +133,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             size: 38,
                           ),
                           onPressed: () async {
-                            // Navigate to AchievementsScreen and wait for the selected avatar
                             final selectedAvatar = await Navigator.push<String>(
                               context,
                               MaterialPageRoute(
@@ -156,7 +148,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 avatar = selectedAvatar;
                               });
 
-                              // Return the selected avatar back to HomeScreen
                               Navigator.pop(context, selectedAvatar);
                             }
                           },

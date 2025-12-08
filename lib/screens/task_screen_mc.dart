@@ -8,7 +8,12 @@ class TaskScreenMc extends StatefulWidget {
   final int taskId;
   final int topicId;
   final int userId;
-  const TaskScreenMc({super.key, required this.taskId, required this.topicId, required this.userId});
+  const TaskScreenMc({
+    super.key,
+    required this.taskId,
+    required this.topicId,
+    required this.userId,
+  });
 
   @override
   State<TaskScreenMc> createState() => _TaskScreenMcState();
@@ -184,7 +189,7 @@ class _TaskScreenMcState extends State<TaskScreenMc> {
         ),
         child: Stack(
           children: [
-            // Floating shapes as background
+            // floating shapes background
             FloatingAnimation(
               maxShapes: 40,
               speedMultiplier: 0.6,

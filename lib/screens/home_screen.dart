@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     loadTopics();
-    loadStars(); // load stars on init
+    loadStars();
   }
 
   Future<void> loadTopics() async {
@@ -35,12 +35,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> loadStars() async {
     final db = UserDatabase();
-    final user = await db.getUser(widget.username); // ищем по username
+    final user = await db.getUser(widget.username);
     if (user != null && user['stars'] != null) {
       setState(() {
         userStars = user['stars'];
         _avatarName = user['avatar'] ?? 'bronze';
-        userId = user['id']; // сохраняем ID
+        userId = user['id'];
       });
     }
   }
@@ -71,7 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             widget.username,
                           );
                           if (user != null) {
-                            // Navigate to ProfileScreen and wait for avatar update
                             final updatedAvatar = await Navigator.push<String>(
                               context,
                               MaterialPageRoute(
@@ -82,11 +81,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             );
 
-                            // Update avatar if returned
                             if (updatedAvatar != null &&
                                 updatedAvatar.isNotEmpty) {
                               setState(() {
-                                // Update local avatar
                                 _avatarName = updatedAvatar;
                               });
                             }
@@ -204,8 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       builder: (context) => TopicScreen(
                                         topicId: topicId,
                                         topicTitle: topic['title'],
-                                        userId:
-                                            userId!, // передаём ID, обязательное условие чтобы не было null
+                                        userId: userId!,
                                       ),
                                     ),
                                   ).then((_) => loadStars());
@@ -233,7 +229,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    icon: const Icon(Icons.logout_rounded, color: Colors.white, size: 32),
+                    icon: const Icon(
+                      Icons.logout_rounded,
+                      color: Colors.white,
+                      size: 32,
+                    ),
                     label: const Text(
                       "Logout",
                       style: TextStyle(fontSize: 32, color: Colors.white),

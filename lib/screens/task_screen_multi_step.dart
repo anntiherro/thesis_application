@@ -8,7 +8,11 @@ class TaskScreenMultiStep extends StatefulWidget {
   final int taskId;
   final int userId;
 
-  const TaskScreenMultiStep({super.key, required this.taskId, required this.userId});
+  const TaskScreenMultiStep({
+    super.key,
+    required this.taskId,
+    required this.userId,
+  });
 
   @override
   State<TaskScreenMultiStep> createState() => _TaskScreenMultiStepState();
@@ -17,7 +21,6 @@ class TaskScreenMultiStep extends StatefulWidget {
 class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
   String question = "";
   List<Map<String, dynamic>> steps = [];
-
 
   List<TextEditingController> left = [];
   List<TextEditingController> right = [];
@@ -238,7 +241,6 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
         ),
         child: Stack(
           children: [
-            /// ⭐ Floating animated shapes (background layer)
             FloatingAnimation(
               maxShapes: 30,
               speedMultiplier: 0.3,
@@ -253,14 +255,12 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
               pulseAmplitude: 0.4,
             ),
 
-            /// ⭐ Main content on top
             SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /// ---------- TASK TITLE ----------
                     Text(
                       '📊 Task ${widget.taskId.toString().substring(1)}',
                       style: const TextStyle(
@@ -280,7 +280,6 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
 
                     const SizedBox(height: 16),
 
-                    /// ---------- QUESTION HEADER CARD ----------
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
@@ -316,7 +315,6 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
 
                     const SizedBox(height: 20),
 
-                    /// ---------- ERROR MESSAGE ----------
                     if (errorMessage.isNotEmpty)
                       Container(
                         padding: const EdgeInsets.all(12),
@@ -355,7 +353,6 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    /// ---------- STEPS LIST ----------
                     Expanded(
                       child: ListView.builder(
                         itemCount: steps.length,
@@ -415,8 +412,6 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
                         },
                       ),
                     ),
-
-                    /// ---------- SUBMIT BUTTON ----------
                     SizedBox(
                       width: double.infinity,
                       height: 65,
@@ -462,7 +457,6 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
     );
   }
 
-  // ----------- IMPROVED INPUT FIELD -----------
   Widget _numField(TextEditingController c) {
     return SizedBox(
       width: 75,
@@ -504,7 +498,6 @@ class _TaskScreenMultiStepState extends State<TaskScreenMultiStep> {
                   tooltip: "Clear Drawing",
                   onPressed: () => setState(() => _fullScreenPoints.clear()),
                 ),
-                
               ],
             ),
             body: GestureDetector(

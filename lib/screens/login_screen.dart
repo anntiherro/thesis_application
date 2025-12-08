@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: const Color.fromRGBO(95, 161, 159, 1),
       body: Stack(
         children: [
-          /// TOP WAVE BACKGROUND
+          //wave bacground
           Positioned(
             top: 0,
             left: 0,
@@ -37,14 +37,13 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
 
-          /// ---------- CONTENT ----------
           Column(
             children: [
               Expanded(
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     return SingleChildScrollView(
-                      reverse: true, // поднимает поле вверх
+                      reverse: true,
                       padding: EdgeInsets.only(
                         bottom: MediaQuery.of(context).viewInsets.bottom,
                       ),
@@ -57,7 +56,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             children: [
                               SizedBox(height: size.height * 0.08),
 
-                              /// --- FIXED SVG ---
                               SvgPicture.asset(
                                 "assets/app_name-cropped.svg",
                                 width: size.width * 0.9,
@@ -74,10 +72,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 fit: BoxFit.contain,
                               ),
 
-                              /// --- Spacer that collapses when keyboard appears ---
+                              //spacer collaps when keyboard on
                               const Spacer(),
 
-                              /// --- INPUTS (move up with keyboard) ---
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 24.0,
@@ -108,8 +105,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-
-
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24.0,
@@ -118,7 +113,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    /// REGISTER BUTTON - Bottom Left
                     TextButton(
                       onPressed: _register,
                       child: const Text(
@@ -131,8 +125,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-
-                    /// LOG IN BUTTON - Bottom Right
                     SizedBox(
                       width: size.width * 0.20,
                       height: 58,
@@ -169,8 +161,8 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-  // ------------------- LOGIN LOGIC -------------------
 
+  // login logic
   void _login() async {
     final username = usernameController.text.trim();
     final password = passwordController.text.trim();
@@ -198,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // ------------------- REGISTER LOGIC -------------------
+  // register logic
 
   void _register() async {
     final username = usernameController.text.trim();
@@ -221,9 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
-  // ------------------- INPUT FIELD -------------------
-
- Widget _inputField({
+  Widget _inputField({
     required TextEditingController controller,
     required String hint,
     bool obscure = false,
@@ -237,7 +227,7 @@ class _LoginScreenState extends State<LoginScreen> {
         style: const TextStyle(fontSize: 26, fontFamily: "Ubuntu"),
         decoration: InputDecoration(
           filled: true,
-          fillColor: const Color.fromRGBO(249, 241, 220, 1), 
+          fillColor: const Color.fromRGBO(249, 241, 220, 1),
           hintText: hint,
           hintStyle: const TextStyle(
             fontSize: 24,
@@ -248,26 +238,21 @@ class _LoginScreenState extends State<LoginScreen> {
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: const BorderSide(
-              color: Color.fromRGBO(19, 189, 171, 1), 
+              color: Color.fromRGBO(19, 189, 171, 1),
               width: 2,
             ),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: const BorderSide(
-              color: Color.fromRGBO(
-                19,
-                189,
-                171,
-                1,
-              ), 
+              color: Color.fromRGBO(19, 189, 171, 1),
               width: 2,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: const BorderSide(
-              color: Color.fromRGBO(0, 150, 136, 1), 
+              color: Color.fromRGBO(0, 150, 136, 1),
               width: 2.5,
             ),
           ),
@@ -276,8 +261,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-/// ------------------- WAVE CLIPPER -------------------
 
 class TopWaveClipper extends CustomClipper<Path> {
   @override

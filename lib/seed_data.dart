@@ -5,13 +5,13 @@ class SeedData {
   static Future<void> seedDatabase() async {
     final db = await UserDatabase().database;
 
-    // --- Insert topics ---
+    //topics
     await db.insert('topics', {'title': 'Arithmetics'});
     await db.insert('topics', {'title': 'Measurement'});
     await db.insert('topics', {'title': 'Word Problems'});
     await db.insert('topics', {'title': 'Logic'});
 
-    // --- Insert tasks ---
+    //tasks
     await db.insert('tasks', {
       'id': 11,
       'topic_id': 1,

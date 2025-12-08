@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
-import 'seed_data.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+//import 'seed_data.dart';
+//import 'package:path/path.dart';
+//import 'package:sqflite/sqflite.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

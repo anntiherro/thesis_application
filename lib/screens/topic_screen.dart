@@ -3,8 +3,8 @@ import '../user_database.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'task_screen_input.dart';
 import 'task_screen_mc.dart';
-import 'task_screen_multi_step.dart'; // NEW
-import 'package:flutter/services.dart' show rootBundle; // NEW
+import 'task_screen_multi_step.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class TopicScreen extends StatefulWidget {
   final int topicId;
@@ -25,12 +25,12 @@ class TopicScreen extends StatefulWidget {
 class _TopicScreenState extends State<TopicScreen> {
   List<Map<String, dynamic>> tasks = [];
 
-  // NEW: tutorial overlay state
-  bool _showTutorialOverlay = false; // NEW
-  List<String> _tutorialImages = []; // NEW
-  int _currentPage = 0; // NEW
+  //tutorial overlay state
+  bool _showTutorialOverlay = false;
+  List<String> _tutorialImages = [];
+  int _currentPage = 0;
   int userStars = 0;
-  int get userId => widget.userId; 
+  int get userId => widget.userId;
 
   @override
   void initState() {
@@ -40,7 +40,7 @@ class _TopicScreenState extends State<TopicScreen> {
 
   Future<void> loadStars() async {
     final db = UserDatabase();
-    final user = await db.getUserById(widget.userId); // ACTUAL USERNAME NEEDED
+    final user = await db.getUserById(widget.userId);
     if (user != null && user['stars'] != null) {
       setState(() {
         userStars = user['stars'];
@@ -51,19 +51,15 @@ class _TopicScreenState extends State<TopicScreen> {
   Future<void> loadTasks() async {
     final db = UserDatabase();
 
-    // Getting tasks for the topic
     final data = await db.getTasksForTopic(widget.topicId);
 
-    // Getting user progress
     final progress = await db.getUserProgress(userId);
 
-    // Creating a map of task_id to completed status
     final Map<int, int> completedTasks = {};
     for (var entry in progress) {
       completedTasks[entry['task_id']] = entry['completed'];
     }
 
-    // Copying tasks and adding completed status
     List<Map<String, dynamic>> taskList = [];
     for (var t in data) {
       final taskCopy = Map<String, dynamic>.from(t);
@@ -71,9 +67,8 @@ class _TopicScreenState extends State<TopicScreen> {
       taskList.add(taskCopy);
     }
 
-    // NEW: tutorial insertion logic
     List<Map<String, dynamic>> finalTaskList = [];
-    int tutorialOrder = 1; // первый туториал = 1
+    int tutorialOrder = 1;
     int taskCounter = 0;
 
     for (int i = 0; i < taskList.length; i++) {
@@ -87,7 +82,7 @@ class _TopicScreenState extends State<TopicScreen> {
         tutorialOrder++;
       }
 
-      finalTaskList.add(taskList[i]); // storing task id
+      finalTaskList.add(taskList[i]);
       taskCounter++;
 
       // after every 4 tasks, add a tutorial
@@ -115,8 +110,11 @@ class _TopicScreenState extends State<TopicScreen> {
       final completed = await Navigator.push<bool>(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              TaskScreenInput(taskId: task['id'], topicId: task['topic_id'], userId: userId),
+          builder: (context) => TaskScreenInput(
+            taskId: task['id'],
+            topicId: task['topic_id'],
+            userId: userId,
+          ),
         ),
       );
       if (completed == true) {
@@ -127,8 +125,11 @@ class _TopicScreenState extends State<TopicScreen> {
       final completed = await Navigator.push<bool>(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              TaskScreenMc(taskId: task['id'], topicId: task['topic_id'], userId: userId),
+          builder: (context) => TaskScreenMc(
+            taskId: task['id'],
+            topicId: task['topic_id'],
+            userId: userId,
+          ),
         ),
       );
       if (completed == true) {
@@ -139,7 +140,8 @@ class _TopicScreenState extends State<TopicScreen> {
       final completed = await Navigator.push<bool>(
         context,
         MaterialPageRoute(
-          builder: (context) => TaskScreenMultiStep(taskId: task['id'], userId: userId,),
+          builder: (context) =>
+              TaskScreenMultiStep(taskId: task['id'], userId: userId),
         ),
       );
       if (completed == true) {
@@ -153,7 +155,6 @@ class _TopicScreenState extends State<TopicScreen> {
     }
   }
 
-  // NEW: loading tutorial images
   Future<void> _loadTutorial(int topicId, int tutorialOrder) async {
     List<String> images = [];
     int i = 1;
@@ -233,7 +234,6 @@ class _TopicScreenState extends State<TopicScreen> {
             ),
           ),
 
-          // Added stars display
           Positioned(
             top: MediaQuery.of(context).padding.top + 12,
             right: 16,
@@ -290,7 +290,6 @@ class _TopicScreenState extends State<TopicScreen> {
                       itemBuilder: (context, index) {
                         final task = tasks[index];
 
-                        // NEW: tutorial button
                         if (task['type'] == 'tutorial') {
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
@@ -322,7 +321,6 @@ class _TopicScreenState extends State<TopicScreen> {
                           );
                         }
 
-                        // Regular task button
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: SizedBox(
@@ -398,7 +396,7 @@ class _TopicScreenState extends State<TopicScreen> {
                           itemCount: _tutorialImages.length,
                           onPageChanged: (index) {
                             setState(() {
-                              _currentPage = index; // update current page
+                              _currentPage = index;
                             });
                           },
                           itemBuilder: (context, index) {
@@ -421,7 +419,7 @@ class _TopicScreenState extends State<TopicScreen> {
                             ),
                             onPressed: () {
                               setState(() {
-                                _showTutorialOverlay = false; // close overlay
+                                _showTutorialOverlay = false;
                               });
                             },
                           ),

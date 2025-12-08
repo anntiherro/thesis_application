@@ -38,6 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   lottie: ^3.1.0
   floating_animation: ^1.1.0
+  shared_preferences: ^2.2.2
 
 
 dev_dependencies:

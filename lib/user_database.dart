@@ -103,6 +103,7 @@ class UserDatabase {
     if (res.isNotEmpty) return res.first; //return first entry
     return null; // if no user found
   }
+
   Future<Map<String, dynamic>?> getUserById(int id) async {
     final db = await database;
     final res = await db.query('users', where: 'id = ?', whereArgs: [id]);
@@ -133,14 +134,12 @@ class UserDatabase {
     );
 
     if (res.isEmpty) {
-      // Insert new record
       await db.insert('user_tasks', {
         'user_id': userId,
         'task_id': taskId,
         'completed': 1,
       });
     } else {
-      // Update existing record
       await db.update(
         'user_tasks',
         {'completed': 1},
