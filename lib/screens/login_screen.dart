@@ -16,6 +16,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final db = UserDatabase();
 
   @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
@@ -23,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: const Color.fromRGBO(95, 161, 159, 1),
       body: Stack(
         children: [
-          //wave bacground
+          // wave background
           Positioned(
             top: 0,
             left: 0,
@@ -72,7 +79,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 fit: BoxFit.contain,
                               ),
 
-                              //spacer collaps when keyboard on
                               const Spacer(),
 
                               Padding(
@@ -114,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TextButton(
-                      onPressed: _register,
+                      onPressed: _onRegisterPressed,
                       child: const Text(
                         "REGISTER",
                         style: TextStyle(
@@ -162,7 +168,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // login logic
+  // ------------------- LOGIN LOGIC -------------------
+
   void _login() async {
     final username = usernameController.text.trim();
     final password = passwordController.text.trim();
@@ -190,28 +197,96 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // register logic
+  // ------------------- REGISTER LOGIC -------------------
 
-  void _register() async {
+  void _onRegisterPressed() async {
     final username = usernameController.text.trim();
-    final password = passwordController.text.trim();
+    final password = passwordController.text;
 
-    if (username.isEmpty || password.isEmpty) {
-      _showMsg("Fill all fields");
+    if (username.isEmpty || password.trim().isEmpty) {
+      _showMsg("Fill all fields before registering");
       return;
     }
 
-    try {
-      await db.insertUser(username, password);
-      _showMsg("Account created successfully!");
-    } catch (e) {
+    final existingUser = await db.getUser(username);
+    if (existingUser != null) {
       _showMsg("Username already exists");
+      return; // ❌ не показываем диалог
     }
+
+    // показываем диалог повторного пароля только если юзер свободен
+    _showRepeatPasswordDialog(username, password);
+  }
+
+  void _showRepeatPasswordDialog(String username, String password) {
+    final repeatController = TextEditingController();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: const Color.fromRGBO(249, 241, 220, 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: const Text(
+            "REPEAT PASSWORD",
+            style: TextStyle(fontFamily: "Ubuntu", fontWeight: FontWeight.bold),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: repeatController,
+                obscureText: true,
+                autofocus: true,
+                decoration: const InputDecoration(hintText: "Repeat password"),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () async {
+                final repeated = repeatController.text.trim();
+
+                if (repeated.isEmpty) {
+                  _showMsg("Enter repeated password");
+                  return;
+                }
+
+                if (repeated != password) {
+                  _showMsg("Passwords do not match");
+                  return;
+                }
+
+                try {
+                  await db.insertUser(username, password.trim());
+                  Navigator.of(context).pop();
+                  _showMsg("Account created successfully!");
+                } catch (e) {
+                  _showMsg("Username already exists");
+                }
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _showMsg(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
+
+  // ------------------- INPUT FIELD -------------------
 
   Widget _inputField({
     required TextEditingController controller,
@@ -261,6 +336,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
+// ------------------- WAVE CLIPPER -------------------
 
 class TopWaveClipper extends CustomClipper<Path> {
   @override
